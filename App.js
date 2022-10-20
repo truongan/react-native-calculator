@@ -13,7 +13,7 @@ const PizzaTranslator = () => {
   const [expression, set_expression] = useState('');
 
   const Calculate_button = styled.Button`
-  
+    
   `;
 
   return (
