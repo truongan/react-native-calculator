@@ -22,33 +22,36 @@ const Item_view = styled.View`
   padding:0.2em;
   margin-top: 0.5em;
 `
+const rendered_item = 
+(item) => {
+  console.log("rendering ",item);
+  return <Item_view>
+    <Item_text_expression>{item.item.expression}</Item_text_expression>
+    <Item_text_result>{item.item.result}</Item_text_result>
+  </Item_view>;
+};
+
 
 const PizzaTranslator = () => {
+
   const [result, set_result] = useState('');
-  const [text, set_text] = useState('');
+  const [expression_text, set_expression_text] = useState('');
   const [history, set_history] = useState([]);
   const [search_result, set_search_result] = useState([]);
-
 
   const Calculate_button = styled.Button`
     font-size: larger;
   `;
 
-  const rendered_item = 
-    (item) => {
-      console.log(item);
-      return <Item_view>
-        <Item_text_expression>{item.item.expression}</Item_text_expression>
-        <Item_text_result>{item.item.result}</Item_text_result>
-      </Item_view>;
-    };
+
+
   return (
     <View style={{padding: 10}}>
       <Expression
         style={{height: 40}}
         placeholder="Type here to translate!"
         onChangeText={newText => { 
-          set_text(newText);
+          set_expression_text(newText);
         }}
       />
       <Text style={{padding: 10, fontSize: 42}}>
@@ -58,19 +61,20 @@ const PizzaTranslator = () => {
       </Text>
       <Calculate_button title="Calculate"
         onPress = {
-          () => {
+          function calculate() {
           try{
-            var b = eval(text); 
+            var b = eval(expression_text); 
             set_result(b);
-            var a = history;
+            var a = [...history];
             a.push( {
               id: 'history-item' + a.length,
-              expression: text,
+              expression: expression_text,
               result : b
             } );
             set_history(a);
             set_search_result(a);
             console.log("history hien tai la ", history);
+            console.log("search_result hien tai la ", search_result);
           } catch (e){
             set_result("");
           }
@@ -91,6 +95,7 @@ const PizzaTranslator = () => {
         data={search_result}
         renderItem = {rendered_item}
         keyExtractor = { item => item.id }
+        extractData = {search_result}
       />
     </View>
   );
