@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Text, TextInput, View, Button } from 'react-native';
 import { FlatList } from 'react-native-web';
 import styled from 'styled-components/native';
@@ -30,12 +30,30 @@ const rendered_item =
     <Item_text_result>{item.item.result}</Item_text_result>
   </Item_view>;
 };
-
-
+const Main_view = styled.View`
+  padding-left: 1em;
+  display: flex;
+  flex-direction: row;
+  border-style: solid;
+  border-color: red;
+  border-width: 1em;
+  flex-flow: wrap;
+`
+const Cal_view= styled.View`
+  flex-grow: 1;
+  min-width: 20em;
+  margin-right: 1em;
+`
+const History_view = styled.View`
+  margin-right: 1em;
+  flex-grow: 1;
+  min-width: 20em;
+`
 const PizzaTranslator = () => {
+  const input_expression = useRef("");
 
   const [result, set_result] = useState('');
-  const [expression_text, set_expression_text] = useState('');
+  // const [expression_text, set_expression_text] = useState('');
   const [history, set_history] = useState([]);
   const [search_result, set_search_result] = useState([]);
 
@@ -43,61 +61,62 @@ const PizzaTranslator = () => {
     font-size: larger;
   `;
 
-
-
   return (
-    <View style={{padding: 10}}>
-      <Expression
-        style={{height: 40}}
-        placeholder="Type here to translate!"
-        onChangeText={newText => { 
-          set_expression_text(newText);
-        }}
-      />
-      <Text style={{padding: 10, fontSize: 42}}>
-        {
-          result
-        }
-      </Text>
-      <Calculate_button title="Calculate"
-        onPress = {
-          function calculate() {
-          try{
-            var b = eval(expression_text); 
-            set_result(b);
-            var a = [...history];
-            a.push( {
-              id: 'history-item' + a.length,
-              expression: expression_text,
-              result : b
-            } );
-            set_history(a);
-            set_search_result(a);
-            console.log("history hien tai la ", history);
-            console.log("search_result hien tai la ", search_result);
-          } catch (e){
-            set_result("");
+    <Main_view >
+      <Cal_view>
+        
+        <Expression
+          placeholder="Type here to translate!"
+          onChangeText={newText =>   input_expression.current = newText     }
+        />
+        <Text style={{padding: 10, fontSize: 42}}>
+          {
+            result
           }
+        </Text>
+        <Calculate_button title="Calculate"
+          onPress = {
+            function calculate() {
+            try{
+              var b = eval(input_expression.current); 
+              set_result(b);
+              var a = [...history];
+              a.push( {
+                id: 'history-item' + a.length,
+                expression: input_expression.current,
+                result : b
+              } );
+              set_history(a);
+              set_search_result(a);
+              console.log("history hien tai la ", history);
+              console.log("search_result hien tai la ", search_result);
+            } catch (e){
+              set_result("");
+            }
+          }}
+        />
+      </Cal_view>
+      <History_view>
+
+        <Expression 
+        placeholder="Type to search"
+        onChangeText= {search_string => {
+          var a = history.filter( (value, inedex, arr) => {
+            return value.expression.includes(search_string) || value.result.toString().includes(search_string);
+          } );
+          console.log(" Ket qua search la " , a);
+          set_search_result(a);
         }}
-      ></Calculate_button>
-      <Expression 
-      placeholder="Type to search"
-      onChangeText= {search_string => {
-        var a = history.filter( (value, inedex, arr) => {
-          return value.expression.includes(search_string) || value.result.toString().includes(search_string);
-        } );
-        console.log(" Ket qua search la " , a);
-        set_search_result(a);
-      }}
-     >
-      </Expression>
+      > 
+        </Expression>
       <FlatList
-        data={search_result}
-        renderItem = {rendered_item}
-        keyExtractor = { item => item.id }
-        extractData = {search_result}
-      />
-    </View>
+          data={search_result}
+          renderItem = {rendered_item}
+          keyExtractor = { (item) => item.id }
+        />
+      </History_view>
+      
+    </Main_view>
   );
 }
 
