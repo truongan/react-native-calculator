@@ -1,11 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 
-import * as db from './db';
+// import { Q } from '@nozbe/watermelondb';
 
+// import * as db from './db';
+import database from './db';
 
 export default function App() {
-  console.log(db.get('notes'))
+  // console.log(database.get('notes'))
   return (
     <View style={styles.container}>
       <Text>Open up App.js to start working on your app!</Text>
@@ -22,3 +24,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+ 
