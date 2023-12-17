@@ -4,9 +4,7 @@ import { FlatList } from 'react-native-web';
 import styled from 'styled-components/native';
 
 const Expression = styled.TextInput`
-  margin-top : 150px;
-  border-style: dashed;
-  border-color: green;
+  border: 3px dashed green;
 `;
 
 const Item_text_expression = styled.Text`
@@ -31,8 +29,8 @@ const rendered_item =
   </Item_view>;
 };
 const Main_view = styled.View`
-  padding-top: 2em;
-  padding-left: 1em;
+  padding-top: 20ch;
+  padding-left: 10px;
   display: flex;
   flex-direction: row;
   border-style: solid;
@@ -97,7 +95,7 @@ const PizzaTranslator = () => {
           }}
         />
       </Cal_view>
-      {/* <History_view>
+      <History_view>
 
         <Expression 
         placeholder="Type to search"
@@ -115,7 +113,7 @@ const PizzaTranslator = () => {
           renderItem = {rendered_item}
           keyExtractor = { (item) => item.id }
         />
-      </History_view> */}
+      </History_view>
       
     </Main_view>
   );
